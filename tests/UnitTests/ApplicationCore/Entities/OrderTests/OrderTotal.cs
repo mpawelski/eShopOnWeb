@@ -9,6 +9,39 @@ namespace Microsoft.eShopWeb.UnitTests.ApplicationCore.Entities.OrderTests
     {
         private decimal _testUnitPrice = 42m;
 
+
+
+        [Fact]
+        public void IsNoDiscountWhereLessThanFiveItems()
+        {
+            var builder = new OrderBuilder();
+            var items = new List<OrderItem>
+            {
+                new OrderItem(builder.TestCatalogItemOrdered, _testUnitPrice, 1)
+            };
+
+            var discount = new DiscountForOrder { PercentDiscountValue = 0.5m };
+
+            var order = new OrderBuilder().WithItemsAndDiscount(items, discount);
+            Assert.Equal(_testUnitPrice, order.Total());
+        }
+
+        [Fact]
+        public void IsDiscountWhereAtLeastFiveItems()
+        {
+            var builder = new OrderBuilder();
+            var items = new List<OrderItem>
+            {
+                new OrderItem(builder.TestCatalogItemOrdered, _testUnitPrice, 5)
+            };
+            var expectedTotalOrderPrice = 105; 
+
+            var discount = new DiscountForOrder { PercentDiscountValue = 0.5m };
+
+            var order = new OrderBuilder().WithItemsAndDiscount(items, discount);
+            Assert.Equal(expectedTotalOrderPrice, order.Total());
+        }
+
         [Fact]
         public void IsZeroForNewOrder()
         {

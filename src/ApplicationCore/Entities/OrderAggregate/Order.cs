@@ -2,6 +2,7 @@
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate
 {
@@ -12,7 +13,7 @@ namespace Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate
             // required by EF
         }
 
-        public Order(string buyerId, Address shipToAddress, List<OrderItem> items)
+        public Order(string buyerId, Address shipToAddress, List<OrderItem> items, DiscountForOrder discount = null)
         {
             Guard.Against.NullOrEmpty(buyerId, nameof(buyerId));
             Guard.Against.Null(shipToAddress, nameof(shipToAddress));
@@ -21,6 +22,7 @@ namespace Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate
             BuyerId = buyerId;
             ShipToAddress = shipToAddress;
             _orderItems = items;
+            Discount = discount;
         }
 
         public string BuyerId { get; private set; }
@@ -39,6 +41,8 @@ namespace Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate
         //https://msdn.microsoft.com/en-us/library/e78dcd75(v=vs.110).aspx 
         public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
+        public DiscountForOrder Discount { get; private set; }
+
         public decimal Total()
         {
             var total = 0m;
@@ -46,6 +50,13 @@ namespace Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate
             {
                 total += item.UnitPrice * item.Units;
             }
+
+            var totalItemsCount = _orderItems.Sum(orderItem => orderItem.Units);
+            if(totalItemsCount >= 5 && Discount != null)
+            {
+                total = total * Discount.PercentDiscountValue;
+            }
+
             return total;
         }
     }

@@ -44,5 +44,12 @@ namespace Microsoft.eShopWeb.UnitTests.Builders
             _order = new Order(TestBuyerId, new AddressBuilder().WithDefaultValues(), items);
             return _order;
         }
+
+        public Order WithItemsAndDiscount(List<OrderItem> items, DiscountForOrder discount)
+        {
+            _order = new Order(TestBuyerId, new AddressBuilder().WithDefaultValues(), items, discount);
+            return _order;
+        }
+
     }
 }

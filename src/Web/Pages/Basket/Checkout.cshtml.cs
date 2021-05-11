@@ -46,6 +46,7 @@ namespace Microsoft.eShopWeb.Web.Pages.Basket
             await SetBasketModelAsync();
         }
 
+        //TODO: replace view model  to vie model with basket item and discound code
         public async Task<IActionResult> OnPost(IEnumerable<BasketItemViewModel> items)
         {
             try
@@ -59,7 +60,13 @@ namespace Microsoft.eShopWeb.Web.Pages.Basket
 
                 var updateModel = items.ToDictionary(b => b.Id.ToString(), b => b.Quantity);
                 await _basketService.SetQuantities(BasketModel.Id, updateModel);
-                await _orderService.CreateOrderAsync(BasketModel.Id, new Address("123 Main St.", "Kent", "OH", "United States", "44240"));
+
+                //TODO: get discount code from view model
+                //TODO: use so discound serice to validate code, see if it's not used
+                var discount = new DiscountForOrder { PercentDiscountValue = 0.5m };
+                await _orderService.CreateOrderAsync(BasketModel.Id,
+                    new Address("123 Main St.", "Kent", "OH", "United States", "44240"),
+                    discount);
                 await _basketService.DeleteBasketAsync(BasketModel.Id);               
             }
             catch (EmptyBasketOnCheckoutException emptyBasketOnCheckoutException)
