@@ -3,6 +3,9 @@
     //discount value object for order
     public class DiscountForOrder
     {
-        public decimal PercentDiscountValue { get; set; }
+        public decimal PercentDiscountForMoreThanFiveValue { get; set; }
+
+        public decimal PercentDiscountForBetweenThreeAndFiveValue { get; set; }
+
     }
 }

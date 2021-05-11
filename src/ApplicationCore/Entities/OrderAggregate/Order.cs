@@ -58,9 +58,15 @@ namespace Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate
             {
                 foreach (var item in _orderItems)
                 {
+                    if (item.Units >= 3 && item.Units < 5)
+                    {
+                        var discountValue = item.UnitPrice * item.Units * Discount.PercentDiscountForBetweenThreeAndFiveValue;
+                        totalDiscountValue += discountValue;
+                    }
+
                     if (item.Units >= 5)
                     {
-                        var discountValue = item.UnitPrice * item.Units * Discount.PercentDiscountValue;
+                        var discountValue = item.UnitPrice * item.Units * Discount.PercentDiscountForMoreThanFiveValue;
                         totalDiscountValue += discountValue;
                     }
                 }

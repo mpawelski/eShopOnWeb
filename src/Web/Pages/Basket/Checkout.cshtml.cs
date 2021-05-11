@@ -63,7 +63,7 @@ namespace Microsoft.eShopWeb.Web.Pages.Basket
 
                 //TODO: get discount code from view model
                 //TODO: use so discound serice to validate code, see if it's not used
-                var discount = new DiscountForOrder { PercentDiscountValue = 0.5m };
+                var discount = new DiscountForOrder { PercentDiscountForMoreThanFiveValue = 0.5m,  PercentDiscountForBetweenThreeAndFiveValue = 0.3m };
                 await _orderService.CreateOrderAsync(BasketModel.Id,
                     new Address("123 Main St.", "Kent", "OH", "United States", "44240"),
                     discount);
