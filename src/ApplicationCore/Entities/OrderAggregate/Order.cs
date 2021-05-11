@@ -52,12 +52,21 @@ namespace Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate
             }
 
             var totalItemsCount = _orderItems.Sum(orderItem => orderItem.Units);
-            if(totalItemsCount >= 5 && Discount != null)
+
+            var totalDiscountValue = 0m;
+            if(Discount != null)
             {
-                total = total * Discount.PercentDiscountValue;
+                foreach (var item in _orderItems)
+                {
+                    if (item.Units >= 5)
+                    {
+                        var discountValue = item.UnitPrice * item.Units * Discount.PercentDiscountValue;
+                        totalDiscountValue += discountValue;
+                    }
+                }
             }
 
-            return total;
+            return total - totalDiscountValue;
         }
     }
 }
